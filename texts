@@ -1,0 +1,90 @@
+import java.util.*;
+import java.util.stream.Stream;
+
+public class Main {
+    public static void main(String[] args){
+        List<String> names = new ArrayList<>();
+        names.add("qweqwe");
+        names.add("asdasd");
+        names.add("gggg");
+        names.add("vbvbvbv");
+        names.add("lllll");
+
+        printlnAll(names);
+        System.out.println(method1(names));
+
+        printlnAll(names);
+        printlnAll(toUpperCaseAndDescending(names));
+
+        printlnAll(method3());
+
+        System.out.println();
+        printlnAll(method4(2l, 5));
+
+    }
+/////Task1
+    static private String method1(List<String> names){
+        StringBuilder result = new StringBuilder();
+        Stream.iterate(1,i -> i + 1).limit(names.size()).filter(x -> x % 2 != 0)
+                .forEach(i->result
+                        .append(i)
+                        .append( ". ")
+                        .append( names.get(i-1)).append( ", "));
+
+        return result.toString();
+    }
+
+////Task2
+    static private List<String> toUpperCaseAndDescending(List< String> list){
+        List<String> result = new ArrayList<>();
+        list.stream().forEach(item -> result.add(new String(item).toUpperCase()));
+        Collections.sort(result, Comparator.reverseOrder());
+        return result;
+    }
+
+/// Task3
+    static private List<Integer> method3(){
+       List<String> list =  Arrays.asList ("1, 2, 0", "4, 5");
+       List<String> resultInString = new ArrayList<>();
+       List<Integer> resultInInteger = new ArrayList<>();
+       list.stream().forEach(i-> resultInString.addAll(Arrays.asList(i.split(", "))));
+       resultInString.stream().forEach(i-> resultInInteger.add(new Integer(i)));
+       return resultInInteger;
+    }
+
+////Task4
+   static private List<Long> method4( Long seed, int size){
+       Long a = 25214903917l;
+       Long c = 11l;
+       Long m = 281_474_976_710_656L;
+       System.out.println("m = " +m);
+
+        List<Long> randomNumber = new ArrayList<>();
+        Stream.iterate(seed, i -> (Long)(a*i+c)%m ).limit(size).forEach(x -> randomNumber.add(x));
+       //Stream stream= Stream.iterate(seed, i -> (Long)(a*i+c)%m );
+        return randomNumber;
+   }
+
+   /////Task5
+   public static <T> Stream<T>  zip(Stream<T> first, Stream<T> second){
+        /*List<T> firstList = first.collect(Collectors.toList());
+        List<T> seconfList = second.collect(Collectors.toList());
+        List<T> resultArray = new ArrayList<>(2*Math.min(firstList.size(), seconfList.size()));
+        Stream.iterate(0, i->i+2).limit(resultArray.size()).forEach(x-> resultArray.set(x, firstList.get(x/2)));
+        Stream.iterate(1, i->i+2).limit(resultArray.size()).forEach(x-> resultArray.set(x, seconfList.get(x/2)));
+        return (Stream<T>)resultArray.stream();*/
+
+        Iterator<T> iterOne = first.iterator();
+        Iterator<T> iterTwo = second.iterator();
+        Stream<T> result = Stream.empty();
+        while(iterOne.hasNext() && iterTwo.hasNext()){
+           result = Stream.concat(Stream.of(iterOne.next()), Stream.of(iterTwo.next()));
+        }
+        return result;
+   }
+
+    private static void printlnAll(List list){
+        list.forEach(System.out :: println);
+    }
+
+}
